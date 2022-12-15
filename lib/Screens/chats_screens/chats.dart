@@ -1,10 +1,7 @@
 import 'package:buildapp/Screens/chats_screens/chat_page.dart';
 import 'package:buildapp/Screens/home_and_general_screen/Bottom_navigation_bar.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:gradients/gradients.dart';
 import 'package:get/get.dart';
 
 class Chat extends StatelessWidget {

@@ -1,8 +1,10 @@
 import 'dart:io';
-
+import 'package:buildapp/Screens/home_and_general_screen/Bids_full_detiles.dart';
 import 'package:buildapp/Screens/home_and_general_screen/Bottom_navigation_bar.dart';
 import 'package:buildapp/Screens/auth/sign_in.dart';
 import 'package:buildapp/Screens/auth/sign_up.dart';
+import 'package:buildapp/Screens/home_and_general_screen/profile.dart';
+import 'package:buildapp/pages/LoginScreen.dart';
 import 'package:buildapp/splash.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -14,12 +16,13 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
       options: FirebaseOptions(
-    apiKey: "AIzaSyDiWWjG89WP1jm0SotuI1jrgsBxaswaqaI", // Your apiKey
-    appId: "1:743274900423:android:f69e28a5f6f40c6da507e2", // Your appId
-    messagingSenderId: "743274900423", // Your messagingSenderId
-    projectId: "build-app-c3c67",
-    databaseURL: "https://build-app-c3c67-default-rtdb.firebaseio.com/",
-    storageBucket: "gs://build-app-c3c67.appspot.com",
+    apiKey: "AIzaSyCtjV7K1W6h8HLWctNp0HS39NVs8CjUm1E", // Your apiKey
+    appId: "1:770415048808:android:6308802c549fb316d2a3dd", // Your appId
+    messagingSenderId: "770415048808", // Your project number
+    projectId: "build-app-b327a",
+    databaseURL:
+        "https://build-app-b327a-default-rtdb.firebaseio.com/", //your realtime database
+    storageBucket: "gs://build-app-b327a.appspot.com", //your storage url
   ));
   runApp(MyApp());
 }
@@ -51,6 +54,7 @@ class MyApp extends StatelessWidget {
           // SignUp(),
           //  MyDrawar(title: ""),
           BottomNavigationBarScreen(),
+      // LoginScreen(),
       // ForgotPass(),
       // HomeScreen(),
 

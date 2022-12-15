@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class ProfileAccount extends StatefulWidget {
@@ -6,6 +7,7 @@ class ProfileAccount extends StatefulWidget {
 }
 
 class _ProfileAccountState extends State<ProfileAccount> {
+  final user = FirebaseAuth.instance.currentUser!;
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -149,7 +151,7 @@ class _ProfileAccountState extends State<ProfileAccount> {
                     ),
                   ),
                   subtitle: Text(
-                    'palmeiro.leonardo@gmail.com',
+                    user.email!,
                     style: TextStyle(
                       fontSize: 18,
                     ),

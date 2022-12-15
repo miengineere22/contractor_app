@@ -1,13 +1,10 @@
-import 'package:buildapp/Screens/home_and_general_screen/Bids_full_detiles.dart';
-import 'package:buildapp/Screens/home_and_general_screen/contractor_profile.dart';
-import 'package:buildapp/Utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
@@ -15,84 +12,310 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  final currentUser = FirebaseAuth.instance;
   final auth = FirebaseAuth.instance;
-  final ref = FirebaseDatabase.instance.reference().child('Posts');
+  final postRef = FirebaseDatabase.instance.reference().child('Posts');
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Dashboard'),
+        title: const Text(''),
         centerTitle: true,
         automaticallyImplyLeading: false,
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-        child: Column(children: [
-          Expanded(
-            child: FirebaseAnimatedList(
-                query: ref.child('Post List'),
-                defaultChild: const Text('Loading'),
-                itemBuilder: (context, snapshot, animation, index) {
-                  return Column(children: [
-                    InkWell(
-                      onTap: (() {
-                        Get.to(BidsFullDetile());
-                      }),
-                      child: Container(
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  snapshot.child('_pTitle').value.toString(),
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                const Spacer(),
-                                Text(
-                                  snapshot.child('_pPrice').value.toString(),
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: const Image(
-                                image: AssetImage('Assets/Images/building.jpg'),
-                                fit: BoxFit.cover,
-                                // width: MediaQuery.of(context).size.width*1,
-                                // height: MediaQuery.of(context).size.height*.25,
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+        child: Card(
+          // color: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          borderOnForeground: true,
+          child: Column(children: [
+            Expanded(
+              child: FirebaseAnimatedList(
+                  query: postRef.child('Post List'),
+                  defaultChild: const Text('Loading'),
+                  itemBuilder: (BuildContext context, DataSnapshot snapshot,
+                      Animation<double> animation, index) {
+                    return Column(children: [
+                      InkWell(
+                        onTap: (() {
+                          // Get.to(BidsFullDetile());
+                          Get.defaultDialog(
+                            title: 'Contact Info ⬇',
+                            textCancel: 'Cancel',
+                            cancelTextColor: Colors.deepPurple,
+                            buttonColor: Colors.deepPurple,
+                            content: SingleChildScrollView(
+                              child: Container(
+                                width: 300,
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              CircleAvatar(
+                                                backgroundColor:
+                                                    Colors.deepPurple,
+                                                child: Icon(
+                                                  Icons.account_box,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 20,
+                                              ),
+                                              Text(
+                                                (snapshot
+                                                    .child('_pUserName')
+                                                    .value
+                                                    .toString()),
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          Row(
+                                            children: [
+                                              CircleAvatar(
+                                                backgroundColor:
+                                                    Colors.deepPurple,
+                                                child: Icon(
+                                                  Icons.mail_outline_rounded,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                              TextButton(
+                                                  child: Text(
+                                                    snapshot
+                                                        .child('_pUserEmail')
+                                                        .value
+                                                        .toString(),
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  onPressed: () async {
+                                                    var currentUserEmail =
+                                                        snapshot
+                                                            .child(
+                                                                '_pUserEmail')
+                                                            .value
+                                                            .toString();
+                                                    String usermail =
+                                                        "mailto:$currentUserEmail";
+                                                    if (await canLaunch(
+                                                        usermail)) {
+                                                      await launch(usermail);
+                                                    } else {
+                                                      throw "Error occured trying to mail that account.";
+                                                    }
+                                                  }
 
-                                // FadeInImage(
-                                // placeholder: 'Assets/Images/wel.PNG',
-                                //  image:  snapshot.child('_pImage').value.toString(),
-                                // ),
+                                                  // child: Icon(Icons.call)
+                                                  ),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          Row(
+                                            children: [
+                                              CircleAvatar(
+                                                backgroundColor:
+                                                    Colors.deepPurple,
+                                                child: Icon(
+                                                  Icons.call,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                              TextButton(
+                                                  child: Text(
+                                                    snapshot
+                                                        .child('_pPhone')
+                                                        .value
+                                                        .toString(),
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  onPressed: () async {
+                                                    var telephoneNumber =
+                                                        snapshot
+                                                            .child('_pPhone')
+                                                            .value
+                                                            .toString();
+                                                    String telephoneUrl =
+                                                        "tel:$telephoneNumber";
+                                                    if (await canLaunch(
+                                                        telephoneUrl)) {
+                                                      await launch(
+                                                          telephoneUrl);
+                                                    } else {
+                                                      throw "Error occured trying to call that number.";
+                                                    }
+                                                  }
+
+                                                  // child: Icon(Icons.call)
+                                                  ),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          Row(
+                                            children: [
+                                              CircleAvatar(
+                                                backgroundColor:
+                                                    Colors.deepPurple,
+                                                child: Icon(
+                                                  Icons.whatsapp,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                              TextButton(
+                                                  child: Text(
+                                                    snapshot
+                                                        .child('_pPhone')
+                                                        .value
+                                                        .toString(),
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  onPressed: () async {
+                                                    var telephoneNumber =
+                                                        snapshot
+                                                            .child('_pPhone')
+                                                            .value
+                                                            .toString();
+                                                    String telephoneUrl =
+                                                        "https://wa.me/$telephoneNumber";
+                                                    if (await canLaunch(
+                                                        telephoneUrl)) {
+                                                      await launch(
+                                                          telephoneUrl);
+                                                    } else {
+                                                      throw "Error occured trying to call that number.";
+                                                    }
+                                                  }
+
+                                                  // child: Icon(Icons.call)
+                                                  ),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          Row(
+                                            children: [
+                                              CircleAvatar(
+                                                backgroundColor:
+                                                    Colors.deepPurple,
+                                                child: Icon(
+                                                  Icons.location_on,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 20,
+                                              ),
+                                              Text(
+                                                (snapshot
+                                                    .child('_pLocation')
+                                                    .value
+                                                    .toString()),
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                          ],
+                          );
+                        }),
+                        child: Container(
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    snapshot.child('_pTitle').value.toString(),
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  const Spacer(),
+                                  Text(
+                                    snapshot.child('_pPrice').value.toString(),
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: FadeInImage.assetNetwork(
+                                  placeholder: 'Assets/Images/building.jpg',
+                                  image: snapshot
+                                      .child("_pImage")
+                                      .value
+                                      .toString(),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 8,
+                              ),
+                              SizedBox(
+                                height: 8,
+                              ),
+                              Text(
+                                snapshot
+                                    .child('_pDescription')
+                                    .value
+                                    .toString(),
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
 
-                    // // Text(snapshot.child('_pTitle').value.toString()),
-                    // Text(snapshot.child('_pLocation').value.toString()),
-                    // Text(snapshot.child('_pCategory').value.toString()),
-                    // Text(snapshot.child('_pPrice').value.toString()),
-                    // Text(snapshot.child('_pPhone').value.toString()),
-                    // Text(snapshot.child('_pDescription').value.toString()),
-                  ]
-
-                      // subtitle: Text(snapshot.child('id').value.toString()),
-                      );
-                }),
-          ),
-        ]),
+                      // // Text(snapshot.child('_pTitle').value.toString()),
+                      // Text(snapshot.child('_pLocation').value.toString()),
+                      // Text(snapshot.child('_pCategory').value.toString()),
+                      // Text(snapshot.child('_pPrice').value.toString()),
+                      // Text(snapshot.child('_pPhone').value.toString()),
+                      // Text(snapshot.child('_pDescription').value.toString()),
+                    ]);
+                  }),
+            ),
+          ]),
+        ),
       ),
     );
   }
@@ -313,6 +536,236 @@ class _DashboardState extends State<Dashboard> {
 //                           fontSize: 15,
 //                           backgroundColor: Colors.white,
 //                           fontWeight: FontWeight.bold)),
+//                   Spacer(),
+//                   Text('Rs.24k',
+//                       style: TextStyle(
+//                           fontSize: 15,
+//                           backgroundColor: Colors.white,
+//                           fontWeight: FontWeight.bold)),
+//                 ],
+//               ),
+//               decoration: BoxDecoration(
+//                 borderRadius: BorderRadius.only(
+//                   topLeft: Radius.circular(70.0),
+//                 ),
+//                 image: DecorationImage(
+//                     image: AssetImage('Assets/Images/building.jpg'),
+//                     fit: BoxFit.cover),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }fontWeight: FontWeight.bold)),
+//                   Spacer(),
+//                   Text('Rs.24k',
+//                       style: TextStyle(
+//                           fontSize: 15,
+//                           backgroundColor: Colors.white,
+//                           fontWeight: FontWeight.bold)),
+//                 ],
+//               ),
+//               decoration: BoxDecoration(
+//                 borderRadius: BorderRadius.only(
+//                   topLeft: Radius.circular(70.0),
+//                 ),
+//                 image: DecorationImage(
+//                     image: AssetImage('Assets/Images/building.jpg'),
+//                     fit: BoxFit.cover),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }fontWeight: FontWeight.bold)),
+//                   Spacer(),
+//                   Text('Rs.24k',
+//                       style: TextStyle(
+//                           fontSize: 15,
+//                           backgroundColor: Colors.white,
+//                           fontWeight: FontWeight.bold)),
+//                 ],
+//               ),
+//               decoration: BoxDecoration(
+//                 borderRadius: BorderRadius.only(
+//                   topLeft: Radius.circular(70.0),
+//                 ),
+//                 image: DecorationImage(
+//                     image: AssetImage('Assets/Images/building.jpg'),
+//                     fit: BoxFit.cover),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }fontWeight: FontWeight.bold)),
+//                   Spacer(),
+//                   Text('Rs.24k',
+//                       style: TextStyle(
+//                           fontSize: 15,
+//                           backgroundColor: Colors.white,
+//                           fontWeight: FontWeight.bold)),
+//                 ],
+//               ),
+//               decoration: BoxDecoration(
+//                 borderRadius: BorderRadius.only(
+//                   topLeft: Radius.circular(70.0),
+//                 ),
+//                 image: DecorationImage(
+//                     image: AssetImage('Assets/Images/building.jpg'),
+//                     fit: BoxFit.cover),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }fontWeight: FontWeight.bold)),
+//                   Spacer(),
+//                   Text('Rs.24k',
+//                       style: TextStyle(
+//                           fontSize: 15,
+//                           backgroundColor: Colors.white,
+//                           fontWeight: FontWeight.bold)),
+//                 ],
+//               ),
+//               decoration: BoxDecoration(
+//                 borderRadius: BorderRadius.only(
+//                   topLeft: Radius.circular(70.0),
+//                 ),
+//                 image: DecorationImage(
+//                     image: AssetImage('Assets/Images/building.jpg'),
+//                     fit: BoxFit.cover),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }fontWeight: FontWeight.bold)),
+//                   Spacer(),
+//                   Text('Rs.24k',
+//                       style: TextStyle(
+//                           fontSize: 15,
+//                           backgroundColor: Colors.white,
+//                           fontWeight: FontWeight.bold)),
+//                 ],
+//               ),
+//               decoration: BoxDecoration(
+//                 borderRadius: BorderRadius.only(
+//                   topLeft: Radius.circular(70.0),
+//                 ),
+//                 image: DecorationImage(
+//                     image: AssetImage('Assets/Images/building.jpg'),
+//                     fit: BoxFit.cover),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }fontWeight: FontWeight.bold)),
+//                   Spacer(),
+//                   Text('Rs.24k',
+//                       style: TextStyle(
+//                           fontSize: 15,
+//                           backgroundColor: Colors.white,
+//                           fontWeight: FontWeight.bold)),
+//                 ],
+//               ),
+//               decoration: BoxDecoration(
+//                 borderRadius: BorderRadius.only(
+//                   topLeft: Radius.circular(70.0),
+//                 ),
+//                 image: DecorationImage(
+//                     image: AssetImage('Assets/Images/building.jpg'),
+//                     fit: BoxFit.cover),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }fontWeight: FontWeight.bold)),
+//                   Spacer(),
+//                   Text('Rs.24k',
+//                       style: TextStyle(
+//                           fontSize: 15,
+//                           backgroundColor: Colors.white,
+//                           fontWeight: FontWeight.bold)),
+//                 ],
+//               ),
+//               decoration: BoxDecoration(
+//                 borderRadius: BorderRadius.only(
+//                   topLeft: Radius.circular(70.0),
+//                 ),
+//                 image: DecorationImage(
+//                     image: AssetImage('Assets/Images/building.jpg'),
+//                     fit: BoxFit.cover),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }fontWeight: FontWeight.bold)),
+//                   Spacer(),
+//                   Text('Rs.24k',
+//                       style: TextStyle(
+//                           fontSize: 15,
+//                           backgroundColor: Colors.white,
+//                           fontWeight: FontWeight.bold)),
+//                 ],
+//               ),
+//               decoration: BoxDecoration(
+//                 borderRadius: BorderRadius.only(
+//                   topLeft: Radius.circular(70.0),
+//                 ),
+//                 image: DecorationImage(
+//                     image: AssetImage('Assets/Images/building.jpg'),
+//                     fit: BoxFit.cover),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }fontWeight: FontWeight.bold)),
+//                   Spacer(),
+//                   Text('Rs.24k',
+//                       style: TextStyle(
+//                           fontSize: 15,
+//                           backgroundColor: Colors.white,
+//                           fontWeight: FontWeight.bold)),
+//                 ],
+//               ),
+//               decoration: BoxDecoration(
+//                 borderRadius: BorderRadius.only(
+//                   topLeft: Radius.circular(70.0),
+//                 ),
+//                 image: DecorationImage(
+//                     image: AssetImage('Assets/Images/building.jpg'),
+//                     fit: BoxFit.cover),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }fontWeight: FontWeight.bold)),
 //                   Spacer(),
 //                   Text('Rs.24k',
 //                       style: TextStyle(

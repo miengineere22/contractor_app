@@ -2,8 +2,6 @@ import 'package:buildapp/Utils/utils.dart';
 import 'package:buildapp/widgets/round_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:form_field_validator/form_field_validator.dart';
-import 'package:get/get.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({Key? key}) : super(key: key);
@@ -14,7 +12,27 @@ class ForgotPasswordScreen extends StatefulWidget {
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final emailController = TextEditingController();
-  final auth = FirebaseAuth.instance;
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    super.dispose();
+  }
+
+  Future passwordReset() async {
+    try {
+      await FirebaseAuth.instance
+          .sendPasswordResetEmail(email: emailController.text.trim())
+          .then((value) {
+        Utils().toastMessage(
+            'We have sent you email to recover password, please check email');
+      });
+    } catch (error) {
+      ((error, stackTrace) {
+        Utils().toastMessage(error.toString());
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,18 +73,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     height: 40,
                   ),
                   RoundButton(
-                      title: 'Forgot',
-                      onTap: () {
-                        auth
-                            .sendPasswordResetEmail(
-                                email: emailController.text.toString())
-                            .then((value) {
-                          Utils().toastMessage(
-                              'We have sent you email to recover password, please check email');
-                        }).onError((error, stackTrace) {
-                          Utils().toastMessage(error.toString());
-                        });
-                      })
+                    title: 'Reset password',
+                    onTap: passwordReset,
+                  )
                 ],
               ),
             ),

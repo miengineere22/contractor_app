@@ -1,7 +1,4 @@
-import 'package:buildapp/Screens/home_and_general_screen/account.dart';
 import 'package:buildapp/Screens/home_and_general_screen/profile.dart';
-import 'package:buildapp/Screens/auth/sign_in.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

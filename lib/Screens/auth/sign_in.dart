@@ -1,12 +1,11 @@
 import 'package:buildapp/Screens/auth/login_with_phone_number.dart';
 import 'package:buildapp/Screens/home_and_general_screen/Bottom_navigation_bar.dart';
-import 'package:buildapp/Screens/home_and_general_screen/home.dart';
 import 'package:buildapp/Screens/auth/sign_up.dart';
 import 'package:buildapp/Utils/utils.dart';
+import 'package:buildapp/controller/main_controller.dart';
 import 'package:buildapp/widgets/round_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'forgot_password.dart';
@@ -18,27 +17,52 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
+  MainController controller = Get.put(MainController());
+
   bool loading = false;
   final _formkey = GlobalKey<FormState>();
   final pwdController = TextEditingController();
   final emailController = TextEditingController();
   final _auth = FirebaseAuth.instance;
 
-  @override
-  void dispose() {
-    setState(() {
-      loading = true;
-    });
-    super.dispose();
-    emailController.dispose();
-    pwdController.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   setState(() {
+  //     // loading = true;
+  //   });
+  //   super.dispose();
+  //   emailController.dispose();
+  //   pwdController.dispose();
+  // }
 
-  void SignIn() {
-    _auth
+  // void SignIn() {
+  //   _auth
+  //       .signInWithEmailAndPassword(
+  //           email: emailController.text,
+  //           password: pwdController.text.toString())
+  //       .then((value) {
+  //     Get.to(BottomNavigationBarScreen());
+  //     setState(() {
+  //       // loading = false;
+  //     });
+  //   }).then((value) {
+  //     Utils().toastMessage('Successfully Login');
+  //     setState(() {
+  //       // loading = false;
+  //     });
+  //   }).onError((error, stackTrace) {
+  //     Utils().toastMessage(error.toString());
+  //     setState(() {
+  //       // loading = false;
+  //     });
+  //   });
+  // }
+
+  Future signIn() async {
+    await FirebaseAuth.instance
         .signInWithEmailAndPassword(
-            email: emailController.text,
-            password: pwdController.text.toString())
+            email: emailController.text.trim(),
+            password: pwdController.text.trim())
         .then((value) {
       Get.to(BottomNavigationBarScreen());
       setState(() {
@@ -55,6 +79,16 @@ class _SignInState extends State<SignIn> {
         loading = false;
       });
     });
+  }
+
+  @override
+  void dispose() {
+    // setState(() {
+    //   // loading = true;
+    // });
+    super.dispose();
+    emailController.dispose();
+    pwdController.dispose();
   }
 
   @override
@@ -152,17 +186,18 @@ class _SignInState extends State<SignIn> {
                         width: 300,
                         height: 40,
                         child: RoundButton(
-                          title: 'Sign In',
-                          loading: loading,
-                          onTap: () {
-                            setState(() {
-                              loading = true;
-                            });
-                            if (_formkey.currentState!.validate()) {
-                              SignIn();
-                            }
-                          },
-                        ),
+                            title: 'Sign In',
+                            // loading: loading,
+                            // onTap: signIn,
+                            // setState(() {
+                            //   // loading = true;
+                            // });
+                            onTap: () {
+                              if (_formkey.currentState!.validate()) {
+                                signIn();
+                                controller.userLoading();
+                              }
+                            }),
                       ),
                     ),
                     InkWell(
@@ -200,15 +235,3 @@ class _SignInState extends State<SignIn> {
     );
   }
 }
-
-//  FlatButton(
-//                         color: Colors.deepPurple,
-//                         onPressed: () {
-//                           Get.to(SignUp());
-//                         },
-//                         textColor: Colors.white,
-//                         child: Text(
-//                           'Create Account',
-//                           style: TextStyle(fontSize: 25.0),
-//                         ),
-//                       ),

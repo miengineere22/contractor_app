@@ -1,6 +1,5 @@
 // import 'package:buildapp/Screens/home.dart';
 import 'dart:async';
-import 'package:buildapp/Screens/home_and_general_screen/home.dart';
 import 'package:buildapp/Screens/auth/sign_in.dart';
 import 'package:flutter/material.dart';
 // import 'package:splashscreen/splashscreen.dart';

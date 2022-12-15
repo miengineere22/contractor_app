@@ -3,7 +3,6 @@ import 'package:buildapp/Screens/bids/deativated_bids.dart';
 import 'package:buildapp/Screens/bids/deleted_bids.dart';
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class MyBids extends StatefulWidget {
   // const MyBids({Key? key}) : super(key: key);

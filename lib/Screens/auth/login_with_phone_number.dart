@@ -2,9 +2,7 @@ import 'package:buildapp/Screens/auth/verify_code.dart';
 import 'package:buildapp/Utils/utils.dart';
 import 'package:buildapp/widgets/round_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class LoginWithPhoneNumber extends StatefulWidget {
   const LoginWithPhoneNumber({Key? key}) : super(key: key);

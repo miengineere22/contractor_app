@@ -1,4 +1,8 @@
 import 'dart:io';
+import 'package:buildapp/Screens/home_and_general_screen/Bottom_navigation_bar.dart';
+import 'package:buildapp/controller/main_controller.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase/firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:buildapp/Utils/utils.dart';
@@ -10,6 +14,7 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 class CreateBids extends StatefulWidget {
   const CreateBids({Key? key}) : super(key: key);
@@ -17,14 +22,18 @@ class CreateBids extends StatefulWidget {
 }
 
 class _CreateBidsState extends State<CreateBids> {
+  MainController controller = Get.put(MainController());
+
   bool loading = false;
   final titleController = TextEditingController();
   final locationController = TextEditingController();
-  final categoryController = TextEditingController();
+  final emailController = TextEditingController();
+  final usernameController = TextEditingController();
   final priceController = TextEditingController();
   final phoneController = TextEditingController();
   final postController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth ref = FirebaseAuth.instance;
 
   final _formkey = GlobalKey<FormState>();
   File? _image;
@@ -32,7 +41,7 @@ class _CreateBidsState extends State<CreateBids> {
 
   firebase_storage.FirebaseStorage storage =
       firebase_storage.FirebaseStorage.instance;
-  // DatabaseReference databaseRef = FirebaseDatabase.instance.ref('Post');
+
   final postRef = FirebaseDatabase.instance.reference().child('Posts');
 
   Future getImageGallery() async {
@@ -156,8 +165,26 @@ class _CreateBidsState extends State<CreateBids> {
                           controller: titleController,
                           validator: RequiredValidator(errorText: 'Required*'),
                           decoration: InputDecoration(
-                            labelText: 'Title',
-                            hintText: "Enter title",
+                            labelText: 'Work Title',
+                            hintText: "Enter Work title",
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        TextFormField(
+                          validator: RequiredValidator(errorText: 'Required*'),
+                          controller: usernameController,
+                          decoration: InputDecoration(
+                            labelText: 'User Name',
+                            hintText: "Enter User Name",
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        TextFormField(
+                          validator: RequiredValidator(errorText: 'Required*'),
+                          controller: emailController,
+                          decoration: InputDecoration(
+                            labelText: 'Email',
+                            hintText: "Enter your Email",
                           ),
                         ),
                         SizedBox(height: 10),
@@ -172,16 +199,8 @@ class _CreateBidsState extends State<CreateBids> {
                         SizedBox(height: 10),
                         TextFormField(
                           validator: RequiredValidator(errorText: 'Required*'),
-                          controller: categoryController,
-                          decoration: InputDecoration(
-                            labelText: 'Category',
-                            hintText: "Enter Category",
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        TextFormField(
-                          validator: RequiredValidator(errorText: 'Required*'),
                           controller: priceController,
+                          keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                             labelText: 'Price (PKR)',
                             hintText: "Set a price",
@@ -191,6 +210,7 @@ class _CreateBidsState extends State<CreateBids> {
                         TextFormField(
                           validator: RequiredValidator(errorText: 'Required*'),
                           controller: phoneController,
+                          keyboardType: TextInputType.phone,
                           decoration: InputDecoration(
                             labelText: 'Phone Number',
                             hintText: "Enter you phone number",
@@ -210,65 +230,71 @@ class _CreateBidsState extends State<CreateBids> {
                         SizedBox(height: 15),
                         RoundButton(
                             title: 'Post Bids',
-                            loading: loading,
-                            onTap: () async
-                                // {
-                                //   if (_formkey.currentState!.validate())
-                                {
-                              setState(() {
-                                loading = true;
-                              });
-                              try {
-                                int date =
-                                    DateTime.now().millisecondsSinceEpoch;
-                                // firebase_storage.Reference ref =
-                                //     firebase_storage.FirebaseStorage.instance
-                                //         .ref('/Post$date');
-                                // UploadTask uploadTask =
-                                //     ref.putFile(_image!.absolute);
-                                // await Future.value(uploadTask);
-                                // var newUrl = await ref.getDownloadURL();
-
-                                // final User? user = _auth.currentUser;
-
-                                postRef
-                                    .child('Post List')
-                                    .child(date.toString())
-                                    .set({
-                                  'pid': date.toString(),
-                                  // '_pImage': newUrl.toString(),
-                                  '_pTime': date.toString(),
-                                  '_pTitle': titleController.text.toString(),
-                                  '_pLocation':
-                                      locationController.text.toString(),
-                                  '_pCategory':
-                                      categoryController.text.toString(),
-                                  '_pPrice':
-                                      'Rs.' + priceController.text.toString(),
-                                  '_pPhone': phoneController.text.toString(),
-                                  '_pDescription':
-                                      postController.text.toString(),
-                                  // '_uEmail': user!.email.toString(),
-                                  // '_uId': user!.uid.toString(),
-                                }).then((value) {
-                                  Utils().toastMessage('Bids added');
-                                  setState(() {
-                                    loading = false;
-                                  });
-                                }).onError((error, stackTrace) {
-                                  Utils().toastMessage(error.toString());
-
-                                  setState(() {
-                                    loading = false;
-                                  });
-                                });
-                              } catch (e) {
+                            // loading: loading,
+                            onTap: () async {
+                              if (_formkey.currentState!.validate()) {
                                 setState(() {
-                                  loading = false;
+                                  //   loading = true;
                                 });
-                                Utils().toastMessage(e.toString());
+                                try {
+                                  var date =
+                                      DateTime.now().millisecondsSinceEpoch;
+
+                                  // firebase_storage.Reference ref =
+                                  //     firebase_storage.FirebaseStorage.instance
+                                  //         .ref('/Post$date');
+                                  // UploadTask uploadTask =
+                                  //     ref.putFile(_image!.absolute);
+                                  // await Future.value(uploadTask);
+                                  // var newUrl = await ref.getDownloadURL();
+
+                                  final user =
+                                      FirebaseAuth.instance.currentUser;
+
+                                  postRef
+                                      .child('Post List')
+                                      .child(date.toString())
+                                      .set({
+                                    'pid': date.toString(),
+                                    // '_pImage': newUrl.toString(),
+                                    '_pTime': date.toString(),
+                                    '_pTitle': titleController.text.toString(),
+                                    '_pLocation':
+                                        locationController.text.toString(),
+                                    '_pUserName':
+                                        usernameController.text.toString(),
+                                    '_pUserEmail':
+                                        emailController.text.toString(),
+                                    '_pPrice':
+                                        'Rs.' + priceController.text.toString(),
+
+                                    '_pPhone': phoneController.text.toString(),
+                                    '_pDescription':
+                                        postController.text.toString(),
+                                    '_uEmail': user!.email.toString(),
+                                    '_uId': user!.uid.toString(),
+                                  }).then((value) {
+                                    Utils().toastMessage('Bids added');
+                                    setState(() {
+                                      loading = false;
+                                    });
+                                  }).onError((error, stackTrace) {
+                                    Utils().toastMessage(error.toString());
+
+                                    setState(() {
+                                      loading = false;
+                                    });
+                                  });
+                                } catch (e) {
+                                  setState(() {
+                                    loading = false;
+                                  });
+                                  Utils().toastMessage(e.toString());
+                                }
+
+                                controller.userLoading();
+                                Get.to(BottomNavigationBarScreen());
                               }
-                              // }
                             }),
                       ])),
                 ),

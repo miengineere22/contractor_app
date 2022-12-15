@@ -1,12 +1,12 @@
 import 'package:buildapp/Screens/auth/sign_in.dart';
-import 'package:buildapp/Screens/home_and_general_screen/Bottom_navigation_bar.dart';
+import 'package:buildapp/Screens/home_and_general_screen/profile.dart';
 import 'package:buildapp/Utils/utils.dart';
+import 'package:buildapp/controller/main_controller.dart';
 import 'package:buildapp/widgets/round_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SignUp extends StatefulWidget {
   @override
@@ -14,7 +14,8 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignInState extends State<SignUp> {
-  // GlobalKey<FormState> _Formkey = GlobalKey<FormState>();
+  MainController controller = Get.put(MainController());
+
   @override
   bool _isHidden = true;
   bool loading = false;
@@ -80,11 +81,6 @@ class _SignInState extends State<SignUp> {
                         validator: MultiValidator([
                           RequiredValidator(errorText: "Required*"),
                         ]),
-                        // onChanged: (val)async {
-                        //   // setState(() {
-                        //   //   cust_name = val;
-                        //   // });
-                        // },
                       ),
                     ),
                     SizedBox(
@@ -140,9 +136,9 @@ class _SignInState extends State<SignUp> {
                         child: RoundButton(
                           title: 'Create Account',
                           loading: loading,
-                          onTap: () {
+                          onTap: () async {
                             setState(() {
-                              loading = true;
+                              // loading = true;
                             });
 
                             if (_formkey.currentState!.validate()) {
@@ -154,7 +150,7 @@ class _SignInState extends State<SignUp> {
                                   .then((value) {
                                 Utils().toastMessage('Successfully Registered');
                                 setState(() {
-                                  loading = false;
+                                  // loading = false;
                                 });
                               }).onError((error, stackTrace) {
                                 Utils().toastMessage(error.toString());
@@ -162,7 +158,7 @@ class _SignInState extends State<SignUp> {
                                   loading = false;
                                 });
                               });
-                              Get.to(BottomNavigationBarScreen());
+                              Get.to(ProfileScreen());
                             }
                           },
                         ),
