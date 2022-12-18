@@ -166,16 +166,16 @@ class _SignInState extends State<SignIn> {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(15.0),
-                      child: FlatButton(
+                      child: TextButton(
                         onPressed: () {
                           Get.to(ForgotPasswordScreen());
                         },
-                        textColor: Colors.blue,
                         child: Align(
                           alignment: Alignment.centerRight,
                           child: Text(
                             'Forgot password !',
-                            style: TextStyle(fontSize: 15.0),
+                            style:
+                                TextStyle(fontSize: 15.0, color: Colors.blue),
                           ),
                         ),
                       ),

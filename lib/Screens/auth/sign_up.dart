@@ -175,18 +175,17 @@ class _SignInState extends State<SignUp> {
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ),
-                          FlatButton(
+                          TextButton(
                             onPressed: () {
                               Get.to(SignIn());
                             },
-                            textColor: Colors.black,
+
                             child: Text(
                               'Sign in',
-                              style: TextStyle(fontSize: 25.0),
+                              style:
+                                  TextStyle(fontSize: 25.0, color: Colors.blue),
                             ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
+
                             // color: Colors.deepPurple,
                           ),
                         ],
