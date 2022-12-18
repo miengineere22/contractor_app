@@ -1,3 +1,4 @@
+import 'package:buildapp/Screens/home_and_general_screen/Bids_full_detiles.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
@@ -22,8 +23,8 @@ class _DashboardState extends State<Dashboard> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text(''),
-        centerTitle: true,
         automaticallyImplyLeading: false,
+        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
@@ -43,7 +44,8 @@ class _DashboardState extends State<Dashboard> {
                     return Column(children: [
                       InkWell(
                         onTap: (() {
-                          // Get.to(BidsFullDetile());
+                          Get.to(BidsFullDetile());
+
                           Get.defaultDialog(
                             title: 'Contact Info ⬇',
                             textCancel: 'Cancel',

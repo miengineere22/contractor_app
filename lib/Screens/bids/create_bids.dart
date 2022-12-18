@@ -272,7 +272,7 @@ class _CreateBidsState extends State<CreateBids> {
                                     '_pDescription':
                                         postController.text.toString(),
                                     '_uEmail': user!.email.toString(),
-                                    '_uId': user!.uid.toString(),
+                                    '_uId': user.uid.toString(),
                                   }).then((value) {
                                     Utils().toastMessage('Bids added');
                                     setState(() {

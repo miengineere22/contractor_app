@@ -4,6 +4,7 @@ import 'package:buildapp/Screens/home_and_general_screen/Bottom_navigation_bar.d
 import 'package:buildapp/Screens/auth/sign_in.dart';
 import 'package:buildapp/Screens/auth/sign_up.dart';
 import 'package:buildapp/Screens/home_and_general_screen/profile.dart';
+// import 'package:buildapp/decisions_tree.dart';
 import 'package:buildapp/pages/LoginScreen.dart';
 import 'package:buildapp/splash.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -54,6 +55,7 @@ class MyApp extends StatelessWidget {
           // SignUp(),
           //  MyDrawar(title: ""),
           BottomNavigationBarScreen(),
+      // DecisionsTree()
       // LoginScreen(),
       // ForgotPass(),
       // HomeScreen(),
