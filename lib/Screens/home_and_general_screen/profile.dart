@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:buildapp/Screens/home_and_general_screen/Bottom_navigation_bar.dart';
 import 'package:buildapp/Utils/utils.dart';
 import 'package:buildapp/widgets/round_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +29,7 @@ class _SignInState extends State<ProfileScreen> {
   final uworktitleController = TextEditingController();
   final uexperienceController = TextEditingController();
   final uteammemberController = TextEditingController();
-  // final _auth = FirebaseAuth.instance;
+  final _auth = FirebaseAuth.instance;
   // String cust_name;
   // String email;
   // String password;
@@ -377,8 +378,8 @@ class _SignInState extends State<ProfileScreen> {
                                     // final User? user = _auth.currentUser;
 
                                     userRef
-                                        .child('User List')
-                                        .child(date.toString())
+                                        .child(
+                                            _auth.currentUser!.uid.toString())
                                         .set({
                                       '_uid': date.toString(),
                                       // '_pImage': newUrl.toString(),
@@ -396,6 +397,8 @@ class _SignInState extends State<ProfileScreen> {
                                           uworktitleController.text.toString(),
                                       '_uTeam':
                                           uteammemberController.text.toString(),
+                                      "userId":
+                                          _auth.currentUser!.uid.toString()
                                       // '_uEmail': user!.uemail.toString(),
                                       // '_uId': user.uid.toString(),
                                     }).then((value) {

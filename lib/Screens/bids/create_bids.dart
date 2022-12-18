@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:buildapp/Screens/home_and_general_screen/Bottom_navigation_bar.dart';
 import 'package:buildapp/controller/main_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase/firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:buildapp/Utils/utils.dart';
@@ -23,6 +22,8 @@ class CreateBids extends StatefulWidget {
 
 class _CreateBidsState extends State<CreateBids> {
   MainController controller = Get.put(MainController());
+
+  final database = FirebaseFirestore.instance.collection("Bits");
 
   bool loading = false;
   final titleController = TextEditingController();
@@ -250,11 +251,7 @@ class _CreateBidsState extends State<CreateBids> {
 
                                   final user =
                                       FirebaseAuth.instance.currentUser;
-
-                                  postRef
-                                      .child('Post List')
-                                      .child(date.toString())
-                                      .set({
+                                  await database.add({
                                     'pid': date.toString(),
                                     // '_pImage': newUrl.toString(),
                                     '_pTime': date.toString(),

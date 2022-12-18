@@ -1,3 +1,4 @@
+import 'package:buildapp/Screens/auth/sign_in.dart';
 import 'package:buildapp/Screens/chats_screens/chats.dart';
 import 'package:buildapp/Screens/home_and_general_screen/Bottom_navigation_bar.dart';
 import 'package:buildapp/Screens/home_and_general_screen/contractor_profile.dart';
@@ -13,9 +14,9 @@ class Account extends StatefulWidget {
 
 class _AccountState extends State<Account> {
   final user = FirebaseAuth.instance.currentUser;
+
   @override
   Widget build(BuildContext context) {
-    // var _auth;
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
@@ -89,7 +90,7 @@ class _AccountState extends State<Account> {
                   ListTile(
                     leading: const Icon(Icons.person),
                     title: const Text(' My Profile '),
-                    onTap: () {
+                    onTap: () async {
                       Get.to(ProfileAccount());
                     },
                   ),
@@ -131,8 +132,10 @@ class _AccountState extends State<Account> {
                   ListTile(
                       leading: const Icon(Icons.logout),
                       title: const Text('LogOut'),
-                      onTap: () {
-                        FirebaseAuth.instance.signOut();
+                      onTap: () async {
+                        await FirebaseAuth.instance.signOut().then((value) {
+                          Get.offAll(() => SignIn());
+                        });
                         // _auth.signOut().then((value) {}
                         // Get.to(SignIn());
                       }),

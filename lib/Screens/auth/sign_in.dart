@@ -25,39 +25,6 @@ class _SignInState extends State<SignIn> {
   final emailController = TextEditingController();
   final _auth = FirebaseAuth.instance;
 
-  // @override
-  // void dispose() {
-  //   setState(() {
-  //     // loading = true;
-  //   });
-  //   super.dispose();
-  //   emailController.dispose();
-  //   pwdController.dispose();
-  // }
-
-  // void SignIn() {
-  //   _auth
-  //       .signInWithEmailAndPassword(
-  //           email: emailController.text,
-  //           password: pwdController.text.toString())
-  //       .then((value) {
-  //     Get.to(BottomNavigationBarScreen());
-  //     setState(() {
-  //       // loading = false;
-  //     });
-  //   }).then((value) {
-  //     Utils().toastMessage('Successfully Login');
-  //     setState(() {
-  //       // loading = false;
-  //     });
-  //   }).onError((error, stackTrace) {
-  //     Utils().toastMessage(error.toString());
-  //     setState(() {
-  //       // loading = false;
-  //     });
-  //   });
-  // }
-
   Future signIn() async {
     await FirebaseAuth.instance
         .signInWithEmailAndPassword(
@@ -79,6 +46,7 @@ class _SignInState extends State<SignIn> {
         loading = false;
       });
     });
+    controller.userLoading();
   }
 
   @override
@@ -195,7 +163,6 @@ class _SignInState extends State<SignIn> {
                             onTap: () {
                               if (_formkey.currentState!.validate()) {
                                 signIn();
-                                controller.userLoading();
                               }
                             }),
                       ),
@@ -221,6 +188,7 @@ class _SignInState extends State<SignIn> {
                             TextButton(
                                 onPressed: () {
                                   Get.to(SignUp());
+                                  controller.userLoading();
                                 },
                                 child: Text('Sign Up'))
                           ],

@@ -54,13 +54,13 @@ class MyApp extends StatelessWidget {
           // ProfileScreen(),
           // SignUp(),
           //  MyDrawar(title: ""),
-          BottomNavigationBarScreen(),
-      // DecisionsTree()
-      // LoginScreen(),
-      // ForgotPass(),
-      // HomeScreen(),
+          // BottomNavigationBarScreen(),
+          // DecisionsTree()
+          // LoginScreen(),
+          // ForgotPass(),
+          // HomeScreen(),
 
-      // LaunchScreen(),
+          LaunchScreen(),
     );
   }
 }

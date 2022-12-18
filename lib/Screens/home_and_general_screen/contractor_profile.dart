@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class ProfileAccount extends StatefulWidget {
@@ -9,6 +12,28 @@ class ProfileAccount extends StatefulWidget {
 class _ProfileAccountState extends State<ProfileAccount> {
   final user = FirebaseAuth.instance.currentUser!;
   // This widget is the root of your application.
+
+  Map map = {};
+
+  @override
+  void didChangeDependencies() async {
+    await FirebaseDatabase.instance
+        .ref()
+        .child("Users")
+        .child(user.uid.toString())
+        .get()
+        .then((value) {
+      log(value.value.toString());
+      setState(() {
+        map = value.value as Map;
+      });
+
+      log(map["_uName"]);
+    });
+
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,7 +92,7 @@ class _ProfileAccountState extends State<ProfileAccount> {
                   height: 10,
                 ),
                 Text(
-                  'Abdul Nasir',
+                  map["_uName"] ?? "",
                   style: TextStyle(
                     fontSize: 35,
                     fontWeight: FontWeight.bold,
@@ -75,7 +100,7 @@ class _ProfileAccountState extends State<ProfileAccount> {
                   ),
                 ),
                 Text(
-                  'Flutter Developer',
+                  map["_uWorkTitle"] ?? "",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 25,
@@ -84,60 +109,60 @@ class _ProfileAccountState extends State<ProfileAccount> {
               ],
             ),
           ),
-          Container(
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: Container(
-                    color: Colors.deepOrange.shade300,
-                    child: ListTile(
-                      title: Text(
-                        '5000',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30,
-                          color: Colors.white,
-                        ),
-                      ),
-                      subtitle: Text(
-                        'Followers',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.white70,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                    color: Colors.red,
-                    child: ListTile(
-                      title: Text(
-                        '5000',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30,
-                          color: Colors.white,
-                        ),
-                      ),
-                      subtitle: Text(
-                        'Following',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.white70,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          // Container(
+          //   child: Row(
+          //     children: <Widget>[
+          //       Expanded(
+          //         child: Container(
+          //           color: Colors.deepOrange.shade300,
+          //           child: ListTile(
+          //             title: Text(
+          //               '5000',
+          //               textAlign: TextAlign.center,
+          //               style: TextStyle(
+          //                 fontWeight: FontWeight.bold,
+          //                 fontSize: 30,
+          //                 color: Colors.white,
+          //               ),
+          //             ),
+          //             subtitle: Text(
+          //               'Followers',
+          //               textAlign: TextAlign.center,
+          //               style: TextStyle(
+          //                 fontSize: 20,
+          //                 color: Colors.white70,
+          //               ),
+          //             ),
+          //           ),
+          //         ),
+          //       ),
+          //       Expanded(
+          //         child: Container(
+          //           color: Colors.red,
+          //           child: ListTile(
+          //             title: Text(
+          //               '5000',
+          //               textAlign: TextAlign.center,
+          //               style: TextStyle(
+          //                 fontWeight: FontWeight.bold,
+          //                 fontSize: 30,
+          //                 color: Colors.white,
+          //               ),
+          //             ),
+          //             subtitle: Text(
+          //               'Following',
+          //               textAlign: TextAlign.center,
+          //               style: TextStyle(
+          //                 fontSize: 20,
+          //                 color: Colors.white70,
+          //               ),
+          //             ),
+          //           ),
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
           Container(
             child: Column(
               children: <Widget>[
@@ -151,7 +176,7 @@ class _ProfileAccountState extends State<ProfileAccount> {
                     ),
                   ),
                   subtitle: Text(
-                    user.email!,
+                    map["_uEmail"] ?? "",
                     style: TextStyle(
                       fontSize: 18,
                     ),
